@@ -45,4 +45,4 @@ jspm_packages
 /tmp
 
 #test
-/app/test.rb
+#/app/test.rb

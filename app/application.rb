@@ -1,26 +1,26 @@
 class Application
     
-    @@items = [Item.new("bose1",10), Item.new("bose2",20)]
-    
+    # @@items = [Item.new("bose1",10), Item.new("bose2",20)]
+    @@items = []
     @@cart = []
+    
     def call(env)
       resp = Rack::Response.new
       req = Rack::Request.new(env)
   
       if req.path.match(/items/)
-        @@items.each do |item|
-          resp.write "#{item}\n"
+        item_name = req.path.split("/items/").last
+        item = @@items.find{|item| item.name == item_name}
+        if item
+            resp.write item.price
+        else
+            resp.write "Item not found"
+            resp.status = 400
         end
-      elsif req.path.match(/search/)
-        search_term = req.params["q"]
-        resp.write handle_search(search_term)
-      elsif req.path.match(/cart/)
-        resp.write handle_cart
-      elsif req.path.match(/add/)
-        add_term = req.params["item"]
-        resp.write handle_add(add_term)
+ 
       else
-        resp.write "Path Not Found"
+        resp.write "Route not found"
+        resp.status = 404
       end
   
       resp.finish
